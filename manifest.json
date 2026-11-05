@@ -1,0 +1,13 @@
+{
+    "display_name": "世界编年史 World Chronicle",
+    "loading_order": 50,
+    "requires": [],
+    "optional": [],
+    "js": "index.js",
+    "css": "style.css",
+    "author": "World Chronicle",
+    "version": "0.2.0",
+    "homePage": "https://github.com/wojiaoxiaojiuli-blip/WorldChronicle",
+    "auto_update": false,
+    "generate_interceptor": "worldChronicleInterceptor"
+}

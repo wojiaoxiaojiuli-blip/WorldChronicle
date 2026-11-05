@@ -1,0 +1,7 @@
+{
+  "name": "world-chronicle",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "世界编年史 —— SillyTavern 大世界剧本平台扩展"
+}

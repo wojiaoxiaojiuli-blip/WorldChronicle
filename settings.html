@@ -1,0 +1,266 @@
+<div id="wc_panel" class="world-chronicle-settings">
+    <div class="inline-drawer">
+        <div class="inline-drawer-toggle inline-drawer-header">
+            <b class="wc_brand"><img class="wc_brand_logo" alt="" aria-hidden="true">世界编年史</b>
+            <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+        </div>
+        <div class="inline-drawer-content">
+            <!-- 顶部：一直看得见的一小条 -->
+            <div class="wc_topline">
+                <div class="wc_topline_card">
+                    <span class="wc_dim">现在打开的卡</span>
+                    <b id="wc_card_name"></b>
+                </div>
+                <label class="checkbox_label wc_switch" title="关掉后，插件先歇着：不给 AI 递提示，也不记日子"><input type="checkbox" id="wc_enabled"> 启用插件</label>
+            </div>
+
+            <!-- 分组：点一下换一组 -->
+            <div class="wc_tabs" role="tablist" aria-label="世界编年史的分组">
+                <div class="wc_tab" role="tab" tabindex="0" data-tab="overview" title="故事今天是哪天、用的哪个剧本"><i class="fa-solid fa-compass"></i><span>概览</span></div>
+                <div class="wc_tab" role="tab" tabindex="0" data-tab="people" title="谁在场，谁是你扮演的人"><i class="fa-solid fa-user-group"></i><span>在场</span></div>
+                <div class="wc_tab" role="tab" tabindex="0" data-tab="music" title="背景音乐"><i class="fa-solid fa-music"></i><span>音乐</span></div>
+                <div class="wc_tab" role="tab" tabindex="0" data-tab="paper" title="故事世界里的报纸、小报"><i class="fa-solid fa-newspaper"></i><span>期刊</span></div>
+                <div class="wc_tab" role="tab" tabindex="0" data-tab="record" title="这个聊天里已经发生的事"><i class="fa-solid fa-book-open"></i><span>记录</span></div>
+                <div class="wc_tab" role="tab" tabindex="0" data-tab="pack" title="编辑、导入剧本，或者先试试示例"><i class="fa-solid fa-scroll"></i><span>剧本</span></div>
+                <div class="wc_tab" role="tab" tabindex="0" data-tab="advanced" title="高级设置，一般不用动"><i class="fa-solid fa-sliders"></i><span>设置</span></div>
+            </div>
+
+            <!-- ============ 概览 ============ -->
+            <div class="wc_pane" role="tabpanel" data-pane="overview">
+                <div class="wc_card">
+                    <div class="wc_card_title"><i class="fa-solid fa-scroll"></i> 使用的剧本</div>
+                    <div class="wc_row">
+                        <select id="wc_pack_select" class="text_pole" aria-label="使用的剧本"></select>
+                    </div>
+                    <div class="wc_dim">这张卡要用哪本剧本，就在这里选。还没有剧本？去「剧本」那格，先加载一个示例试试。</div>
+                </div>
+
+                <div class="wc_card wc_needs_pack">
+                    <div class="wc_card_title"><i class="fa-solid fa-calendar-day"></i> 故事日期</div>
+                    <div id="wc_date_text" class="wc_big"></div>
+                    <div id="wc_phase_text" class="wc_dim"></div>
+                    <div id="wc_countdowns" class="wc_countdowns"></div>
+                    <div class="wc_row">
+                        <input type="text" id="wc_date_input" class="text_pole" placeholder="如：1997-07-02">
+                        <div id="wc_set_date" class="menu_button">改日期</div>
+                    </div>
+                    <div class="wc_dim">AI 写错了日子，就在这里改。往回改也行。</div>
+                </div>
+
+                <div class="wc_card wc_no_pack">
+                    <div class="wc_dim">选好剧本以后，这里会写着故事里今天是哪天、现在是什么时代气氛，还有离大事还剩几天。</div>
+                </div>
+
+                <div class="wc_row wc_buttons">
+                    <div id="wc_open_calendar" class="menu_button" title="看看故事里今天是哪天，接下来会发生什么"><i class="fa-solid fa-calendar-days"></i> 查看日历</div>
+                </div>
+            </div>
+
+            <!-- ============ 在场 ============ -->
+            <div class="wc_pane" role="tabpanel" data-pane="people">
+                <div class="wc_card wc_no_pack">
+                    <div class="wc_dim">先在「概览」里选一本剧本，这里才会列出剧本里的人。</div>
+                </div>
+                <div class="wc_needs_pack">
+                    <div class="wc_card">
+                        <div class="wc_card_title"><i class="fa-solid fa-user-group"></i> 在场的人</div>
+                        <div class="wc_dim">谁在场，AI 就会写这件事给谁带来的麻烦。插件会自己看聊天来判断，你也可以手动改。</div>
+                        <table id="wc_presence_table" class="wc_table"><tbody></tbody></table>
+                    </div>
+
+                    <div class="inline-drawer wc_card wc_fold">
+                        <div class="inline-drawer-toggle inline-drawer-header"><b>这张卡的角色对应</b><div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div></div>
+                        <div class="inline-drawer-content">
+                            <div class="wc_row">
+                                <label for="wc_player">你（user）扮演谁</label>
+                                <select id="wc_player" class="text_pole"></select>
+                            </div>
+                            <div class="wc_dim">剧本里的人在这张卡里叫法不一样？在这里补上别的叫法或身份。卡里有剧本没写的人，就填个新名字。只对这张卡有用。</div>
+                            <table id="wc_map_table" class="wc_table"><tbody></tbody></table>
+                            <datalist id="wc_char_ids"></datalist>
+                            <div id="wc_map_add" class="menu_button">＋ 添加一行</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="wc_card">
+                    <div class="wc_row"><label for="wc_lastn">看最近几条消息来判断谁在场</label><input type="number" id="wc_lastn" class="text_pole" min="1" max="50"></div>
+                    <div class="wc_dim">比如填 4，插件就看最近 4 条聊天里提到了谁。</div>
+                </div>
+            </div>
+
+            <!-- ============ 音乐 ============ -->
+            <div class="wc_pane" role="tabpanel" data-pane="music">
+                <div class="wc_card">
+                    <label class="checkbox_label wc_switch" title="关掉后：不放歌，不上网找歌，也不让 AI 点歌"><input type="checkbox" id="wc_bgm_enabled"> <i class="fa-solid fa-music"></i> 背景音乐</label>
+                    <div class="wc_dim">关掉以后：不放歌，不上网找歌，也不让 AI 点歌。</div>
+                </div>
+                <div class="wc_bgm_body">
+                    <div class="wc_card">
+                        <div class="wc_row"><span>现在放的是：<b id="wc_bgm_now">（现在没放歌）</b></span></div>
+                        <div class="wc_row wc_buttons">
+                            <div id="wc_bgm_play" class="menu_button" title="开始放歌。浏览器把声音拦住时，也点这里"><i class="fa-solid fa-play"></i> 播放</div>
+                            <div id="wc_bgm_stop" class="menu_button" title="先停下，等下一次换歌时再响"><i class="fa-solid fa-stop"></i> 停止</div>
+                        </div>
+                        <div class="wc_row wc_volume">
+                            <i class="fa-solid fa-volume-low wc_dim"></i>
+                            <input type="range" id="wc_bgm_volume" min="0" max="1" step="0.05" title="音量" aria-label="音量">
+                            <span id="wc_bgm_volume_text"></span>
+                        </div>
+                    </div>
+                    <div class="wc_card">
+                        <div class="wc_card_title"><i class="fa-solid fa-magnifying-glass"></i> 在线找歌</div>
+                        <label class="checkbox_label"><input type="checkbox" id="wc_gd_enabled"> 允许用 GD音乐台在线找歌</label>
+                        <div class="wc_dim">作者贴了网址的歌用不着它。只有剧本里只写了歌名、或者让 AI 自己点歌时，才要打开。打开前会先请你看一段说明。</div>
+                        <div class="wc_row" id="wc_gd_platform">
+                            <label for="wc_gd_source">去哪个平台找</label>
+                            <select id="wc_gd_source" class="text_pole"></select>
+                        </div>
+                    </div>
+                    <div class="wc_card">
+                        <div class="wc_row"><label for="wc_bgm_fade">换歌时慢慢淡出淡入（毫秒）</label><input type="number" id="wc_bgm_fade" class="text_pole" min="0" max="10000" step="100"></div>
+                        <div class="wc_dim">1000 就是 1 秒。填 0，就是一下子换过去。</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ 期刊 ============ -->
+            <div class="wc_pane" role="tabpanel" data-pane="paper">
+                <div class="wc_card">
+                    <label class="checkbox_label wc_switch"><input type="checkbox" id="wc_paper_enabled"> 打开期刊</label>
+                    <div class="wc_dim">故事世界里也有报纸、小报。到了出刊的日子，AI 会另外写一期给你看，不会混进聊天里。插件送你一本《玉郎闲话》：女尊世界里给男子看的风尚小报，每月初一、十五出刊，含成人向内容。没选剧本也能看。</div>
+                </div>
+                <div class="wc_paper_body">
+                    <div class="wc_card">
+                        <div class="wc_card_title"><i class="fa-solid fa-list-check"></i> 想看哪几本，就勾哪几本</div>
+                        <div id="wc_paper_list"></div>
+                        <div class="wc_row wc_buttons">
+                            <div id="wc_paper_open" class="menu_button" title="看最新一期，也能往前翻往期"><i class="fa-solid fa-newspaper"></i> 看刊物</div>
+                        </div>
+                    </div>
+                    <div class="wc_card">
+                        <label class="checkbox_label"><input type="checkbox" id="wc_paper_remind"> 出刊提醒</label>
+                        <div class="wc_dim">新一期到了，输入框旁边的日历图标上会亮一个小红点，还会冒一句提示。不想被打扰，就把它关掉。</div>
+                    </div>
+                    <div class="inline-drawer wc_card wc_fold">
+                        <div class="inline-drawer-toggle inline-drawer-header"><b>写一期时，给 AI 看多少</b><div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div></div>
+                        <div class="inline-drawer-content">
+                            <div class="wc_dim">给得越多，AI 越懂这个世界，可也越慢、越费钱。不知道填多少，就别动它。</div>
+                            <div class="wc_row"><label for="wc_paper_lore" title="卡里带的世界书和卡绑定的世界书，最多给 AI 看这么多字">世界书最多给几个字</label><input type="number" id="wc_paper_lore" class="text_pole" min="0" max="100000" step="500"></div>
+                            <div class="wc_row"><label for="wc_paper_chat" title="比如填 20，AI 就看最近 20 条聊天，好知道最近出了什么事">看最近几条聊天</label><input type="number" id="wc_paper_chat" class="text_pole" min="0" max="200"></div>
+                            <div class="wc_row"><label for="wc_paper_length" title="一期最多写多长。写到一半断掉的话，就调大一点">一期最多写多长（token）</label><input type="number" id="wc_paper_length" class="text_pole" min="200" max="16000" step="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ 世界记录 ============ -->
+            <div class="wc_pane" role="tabpanel" data-pane="record">
+                <div class="wc_card wc_no_pack">
+                    <div class="wc_dim">先在「概览」里选一本剧本。聊着聊着，这里就会记下故事里发生过的事。</div>
+                </div>
+                <div class="wc_needs_pack">
+                    <div class="wc_dim wc_lead">这里记着这个聊天里已经发生的事。记错了可以点 ✕ 删掉，也可以自己补上。</div>
+
+                    <div class="wc_card">
+                        <div class="wc_card_title"><i class="fa-solid fa-code-branch"></i> 大家做过的选择</div>
+                        <table id="wc_choices" class="wc_table"><tbody></tbody></table>
+                        <div class="wc_row">
+                            <select id="wc_choice_who" class="text_pole" aria-label="谁做的选择"></select>
+                            <select id="wc_choice_event" class="text_pole" aria-label="在哪件事上"></select>
+                        </div>
+                        <div class="wc_row">
+                            <input type="text" id="wc_choice_text" class="text_pole" placeholder="选了什么，如：卖掉股票">
+                            <div id="wc_choice_add" class="menu_button">记下</div>
+                        </div>
+                    </div>
+
+                    <div class="wc_card">
+                        <div class="wc_card_title"><i class="fa-solid fa-note-sticky"></i> 小纸条（已经发生的转折）</div>
+                        <div class="wc_dim">每张小纸条都在提醒故事：“这件事已经发生了，而且改变了后面的事。”</div>
+                        <div id="wc_flags"></div>
+                        <div class="wc_row">
+                            <input type="text" id="wc_flag_text" class="text_pole" placeholder="纸条上写什么，如：股市崩了">
+                            <div id="wc_flag_add" class="menu_button">贴上</div>
+                        </div>
+                    </div>
+
+                    <div class="wc_card">
+                        <div class="wc_card_title"><i class="fa-solid fa-water"></i> 牵连（一个人的选择，影响了身边的人）</div>
+                        <div id="wc_ripples"></div>
+                    </div>
+
+                    <div class="wc_card">
+                        <div class="wc_card_title"><i class="fa-solid fa-clock-rotate-left"></i> 最近发生了什么</div>
+                        <div id="wc_log" class="wc_log"></div>
+                    </div>
+
+                    <div class="wc_card wc_danger">
+                        <div class="wc_dim">想让这个聊天从头来过？点下面的按钮。聊天消息本身不会删。</div>
+                        <div id="wc_reset_chat" class="menu_button redWarningBG">清空这个聊天的记录</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ 剧本 ============ -->
+            <div class="wc_pane" role="tabpanel" data-pane="pack">
+                <div class="wc_card">
+                    <div class="wc_card_title"><i class="fa-solid fa-pen"></i> 写剧本</div>
+                    <div class="wc_dim">在日历上点一天，写下那天发生了什么、影响谁。全是填空，不用写代码。</div>
+                    <div class="wc_row wc_buttons">
+                        <div id="wc_open_editor" class="menu_button"><i class="fa-solid fa-pen"></i> 编辑日历和剧本</div>
+                    </div>
+                </div>
+                <div class="wc_card">
+                    <div class="wc_card_title"><i class="fa-solid fa-box-open"></i> 拿一本现成的</div>
+                    <div class="wc_dim">别人给了你剧本文件（.json），点“导入剧本文件”。只想先看看是什么样，点“加载示例剧本”。弄好以后，回「概览」的“使用的剧本”里选它。</div>
+                    <div class="wc_row wc_buttons">
+                        <div id="wc_import_btn" class="menu_button"><i class="fa-solid fa-file-import"></i> 导入剧本文件</div>
+                        <div id="wc_load_demo" class="menu_button"><i class="fa-solid fa-wand-magic-sparkles"></i> 加载示例剧本</div>
+                        <input type="file" id="wc_import_file" accept=".json,application/json" hidden>
+                    </div>
+                </div>
+                <div class="wc_card">
+                    <label class="checkbox_label"><input type="checkbox" id="wc_autoload"> 打开角色卡时，自动用上卡里带的剧本</label>
+                    <div class="wc_dim">有的角色卡里自带剧本。勾上它，打开这种卡时就不用你自己去选了。</div>
+                </div>
+            </div>
+
+            <!-- ============ 高级设置 ============ -->
+            <div class="wc_pane" role="tabpanel" data-pane="advanced">
+                <div class="wc_dim wc_lead">这一格一般不用动。不确定的时候，保持原样就好。</div>
+                <div class="wc_card">
+                    <div class="wc_card_title"><i class="fa-solid fa-comment-dots"></i> 给 AI 的提示</div>
+                    <div class="wc_row">
+                        <label for="wc_position">给 AI 的提示放在哪</label>
+                        <select id="wc_position" class="text_pole">
+                            <option value="1">放进聊天记录里（看下面的“深度”）</option>
+                            <option value="0">主提示词之后</option>
+                            <option value="2">主提示词之前</option>
+                        </select>
+                    </div>
+                    <div class="wc_row"><label for="wc_depth" title="0 是放在最新一条消息后面，数字越大越靠前">深度（倒数第几条消息）</label><input type="number" id="wc_depth" class="text_pole" min="0" max="100"></div>
+                    <div class="wc_row">
+                        <label for="wc_role">用谁的口吻说</label>
+                        <select id="wc_role" class="text_pole"><option value="0">system（系统）</option><option value="1">user（你）</option><option value="2">assistant（AI）</option></select>
+                    </div>
+                </div>
+                <div class="wc_card">
+                    <div class="wc_card_title"><i class="fa-solid fa-tags"></i> 小标记</div>
+                    <label class="checkbox_label" title="比如让 AI 在回复末尾写 &lt;time&gt;1997-07-02&lt;/time&gt;，插件才知道日子走到哪了"><input type="checkbox" id="wc_instructions"> 教 AI 用小标记写下日期、选择和配乐（建议勾上）</label>
+                    <label class="checkbox_label"><input type="checkbox" id="wc_hide_tags"> 聊天里把这些小标记藏起来</label>
+                </div>
+                <div class="wc_card">
+                    <label class="checkbox_label"><input type="checkbox" id="wc_cal_button_on"> 在输入框左侧显示日历按钮</label>
+                    <div class="wc_dim">点这个小日历，能看日历，也能看期刊。关掉也没关系，魔杖菜单里还有入口。</div>
+                </div>
+                <div class="inline-drawer wc_card wc_fold wc_needs_pack">
+                    <div class="inline-drawer-toggle inline-drawer-header"><b>AI 这一轮会收到什么</b><div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div></div>
+                    <div class="inline-drawer-content">
+                        <textarea id="wc_preview" class="text_pole textarea_compact" rows="12" readonly></textarea>
+                        <div id="wc_refresh" class="menu_button">刷新</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
